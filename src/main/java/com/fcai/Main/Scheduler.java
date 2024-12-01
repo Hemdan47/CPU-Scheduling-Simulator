@@ -3,13 +3,11 @@ import java.util.Collection;
 import java.util.List;
 
 public abstract class Scheduler {
-    private Collection<Process> processList;
-    private int contextSwitchingTime;
-
+    protected List<Process> processList;
+    protected int contextSwitchingTime;
     public boolean addProcess(Process process) {
         return processList.add(process);
     }
-
     public int calculateAverageWaitingTime() {
         int totalWaitingTime = 0;
         for (Process process : processList) {
@@ -24,11 +22,9 @@ public abstract class Scheduler {
         }
         return (int)Math.ceil(totalTurnAroundTime/processList.size());
     }
-
     public int getContextSwitchingTime() {
         return contextSwitchingTime;
     }
-
     public abstract void execute();
 
 
