@@ -56,23 +56,19 @@ public class SJF extends Scheduler {
 
         // Output results
         System.out.println("Processes execution order:");
-        int totalWaitingTime = 0;
-        int totalTurnAroundTime = 0;
+
 
         for (Process p : executedProcesses) {
             System.out.printf("Process: %s, Waiting Time: %d, Turnaround Time: %d%n",
                     p.getName(), p.getWaitingTime(), p.calculateTurnAroundTime());
-            totalWaitingTime += p.getWaitingTime();
-            totalTurnAroundTime += p.calculateTurnAroundTime();
+
         }
+        processList = executedProcesses;
 
-        // Calculate averages
-        double averageWaitingTime = (!executedProcesses.isEmpty()) ? (double) totalWaitingTime / executedProcesses.size() : 0;
-        double averageTurnAroundTime = (!executedProcesses.isEmpty()) ? (double) totalTurnAroundTime / executedProcesses.size() : 0;
+        System.out.printf("Average Waiting Time: %.2f%n", (double) calculateAverageWaitingTime());
+        System.out.printf("Average Turnaround Time: %.2f%n", (double) calculateAverageTurnAroundTime());
 
-        // Print averages
-        System.out.printf("Average Waiting Time: %.2f%n", averageWaitingTime);
-        System.out.printf("Average Turnaround Time: %.2f%n", averageTurnAroundTime);
+
     }
 
 }
