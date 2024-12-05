@@ -2,9 +2,11 @@ package com.fcai.Main;
 
 import com.fcai.FCAI.FCAI;
 import com.fcai.PriorityScheduling.PriorityScheduling;
+import com.fcai.SJF.SJF;
 import com.fcai.SRTF.SRTF;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -12,10 +14,12 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -35,7 +39,7 @@ public class Main extends Application {
     Process p4 = new Process("p4", Color.LIGHTGREEN, 4, 29, 2, 2);
     List<Process> processList = List.of(p1, p2, p3, p4);
 
-    Scheduler s = new FCAI(processList);
+    Scheduler s = new SRTF(processList);
 
     @Override
     public void start(Stage primaryStage) {
@@ -91,12 +95,6 @@ public class Main extends Application {
         // Scene amd Stage set up
         BorderPane root = new BorderPane();
 
-        //set title
-        Text simulatorTitle = new Text("CPU Scheduling Simulator");
-        simulatorTitle.setFill(Color.RED);
-        root.setTop(simulatorTitle);
-
-        //set Animation
         ScrollPane graph = new ScrollPane(canvas);
 
         graph.setPannable(true); // Allow dragging the viewport with the mouse
@@ -106,21 +104,35 @@ public class Main extends Application {
         root.setCenter(graph);
 
         //set Statistics
-//        VBox statistics=new VBox();
-//
-//        //statistics title
-//        Text statisticsText = new Text("Statistics");
-//        statisticsText.setFill(Color.RED);
-//        statistics.getChildren().add(statisticsText);
-//
-//        //statistics table
-//        statistics.getChildren().add(setStatisticsTable());
-//        statistics.setSpacing(20);
-//        statistics.setAlignment(Pos.TOP_CENTER);
-//        //root.setBottom(statistics);
+        VBox statistics = new VBox();
 
+        //statistics title
+        Text statisticsText = new Text("Statistics");
+        statisticsText.setFill(Color.RED);
+        statistics.getChildren().add(statisticsText);
 
-        Scene scene = new Scene(root, 800, 400);
+        //statistics table
+        statistics.getChildren().add(setStatisticsTable());
+        statistics.setSpacing(20);
+        statistics.setAlignment(Pos.TOP_CENTER);
+        root.setBottom(statistics);
+
+        //set process info
+        VBox processesInfo = new VBox();
+
+        //processInfo title
+        Text processInfoText = new Text("Process Information Table");
+        processInfoText.setFill(Color.RED);
+        processesInfo.getChildren().add(processInfoText);
+
+        //ProcessInfo Table
+        processesInfo.getChildren().add(setProcessesInfoTable());
+        processesInfo.setSpacing(20);
+        processesInfo.setAlignment(Pos.TOP_CENTER);
+        root.setTop(processesInfo);
+
+        Scene scene = new Scene(root, 900, 600);
+        scene.setFill(Color.BLUE);
 
         primaryStage.setTitle("CPU Scheduling Graph");
         primaryStage.setScene(scene);
@@ -187,7 +199,70 @@ public class Main extends Application {
         Text avTurnaroundTime = new Text(String.valueOf(guiStatistics.getAvTurnaroundTime()));
         statisticsTable.add(avTurnaroundTime, 1, 2);
 
+        statisticsTable.setHgap(15.0);
+        statisticsTable.setVgap(10);
+
         return statisticsTable;
+    }
+
+    private GridPane setProcessesInfoTable() {
+        GridPane processesInfoTable = new GridPane();
+
+        String[] columnTitles = new String[]{
+                "Order", "Name", "Color", "Priority", "Quantum", "Burst Time", "Arrival Time", "Waiting Time", "Turnaround Time", "Complete Time"
+        };
+
+        List<Process> processList = s.processList;
+
+        for (int i = 0; i < columnTitles.length; i++) {
+            Text columnTitle = new Text(columnTitles[i]);
+            columnTitle.setFill(Color.RED);
+
+            processesInfoTable.add(columnTitle, i, 0);
+        }
+
+        for (int i = 0; i < processList.size(); i++) {
+            Text id = new Text(String.valueOf(i+1));
+            processesInfoTable.add(id, 0, i+1);
+
+            Text name = new Text(processList.get(i).getName());
+            processesInfoTable.add(name, 1, i+1);
+            Rectangle color = new Rectangle();
+            color.setFill(processList.get(i).getColor());
+            color.setHeight(20);
+            color.setWidth(30);
+            processesInfoTable.add(color, 2, i+1);
+
+            Text priority = new Text(String.valueOf(processList.get(i).getPriority()));
+            processesInfoTable.add(priority, 3, i+1);
+
+            Text quantum = new Text(String.valueOf(processList.get(i).getQuantum()));
+            processesInfoTable.add(quantum, 4, i+1);
+
+            Text burstTime = new Text(String.valueOf(processList.get(i).getInitialBurstTime()));
+            processesInfoTable.add(burstTime, 5, i+1);
+
+            Text arrivalTime = new Text(String.valueOf(processList.get(i).getArrivalTime()));
+            processesInfoTable.add(arrivalTime, 6, i+1);
+
+            Text waitingTime = new Text(String.valueOf(processList.get(i).getWaitingTime()));
+            processesInfoTable.add(waitingTime, 7, i+1);
+
+            int turnaroundTime = processList.get(i).getCompletionTime() - processList.get(i).getArrivalTime();
+            Text turnaroundTimeText = new Text(String.valueOf(turnaroundTime));
+            processesInfoTable.add(turnaroundTimeText, 8, i+1);
+
+            Text completionTime = new Text(String.valueOf(processList.get(i).getCompletionTime()));
+            processesInfoTable.add(completionTime, 9, i+1);
+        }
+
+        processesInfoTable.setAlignment(Pos.TOP_CENTER);
+        processesInfoTable.setHgap(15.0);
+        processesInfoTable.setVgap(10);
+
+        processesInfoTable.setStyle("-fx-border: 3px solid; -fx-border-color: red;");
+
+        return processesInfoTable;
     }
 
 
