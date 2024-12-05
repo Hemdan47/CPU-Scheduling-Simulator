@@ -182,6 +182,8 @@ public class Main extends Application {
 
     private GridPane setStatisticsTable() {
         GridPane statisticsTable = new GridPane();
+        statisticsTable.setPadding(new Insets(10, 20, 10, 20)); // top, right, bottom, left
+
         GUIStatistics guiStatistics = s.guiStatistics;
 
         Text scheduleTitle = new Text("Schedule Name: ");
