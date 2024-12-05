@@ -178,6 +178,10 @@ public class FCAI extends Scheduler {
 
         int currentTime = 0;
         List<Process> completedProcesses = new ArrayList<>();
+        Map<String, Integer> initialBurstTimeMap = new HashMap<>();
+        for (Process process : processList) {
+            initialBurstTimeMap.put(process.getName(), process.getBurstTime());
+        }
 
         while (!processList.isEmpty() || !readyQueue.isEmpty()) {
 
@@ -213,6 +217,7 @@ public class FCAI extends Scheduler {
             // If the process finishes during the first 40%, update completion time
             if (currentProcess.getBurstTime() == 0) {
                 currentProcess.setCompletionTime(currentTime);
+                currentProcess.setWaitingTime(currentProcess.calculateTurnAroundTime()-initialBurstTimeMap.get(currentProcess.getName()));
                 completedProcesses.add(currentProcess);
                 continue;
             }
@@ -250,6 +255,7 @@ public class FCAI extends Scheduler {
 
                 if (currentProcess.getBurstTime() == 0) {
                     currentProcess.setCompletionTime(currentTime);
+                    currentProcess.setWaitingTime(currentProcess.calculateTurnAroundTime()-initialBurstTimeMap.get(currentProcess.getName()));
                     completedProcesses.add(currentProcess);
                     break;
                 }
@@ -262,7 +268,23 @@ public class FCAI extends Scheduler {
             }
 
         }
+
+        processList = completedProcesses;
+        for (Process p : processList) {
+            System.out.printf("Process: %s, Waiting Time: %d, Turnaround Time: %d\n",
+                    p.getName(), p.getWaitingTime(), p.calculateTurnAroundTime());
+        }
+
+        double avWaitingTime=calculateAverageWaitingTime();
+        double avTurnaroundTime=calculateAverageTurnAroundTime();
+
+        System.out.printf("Average Waiting Time: %.2f%n", avWaitingTime);
+        System.out.printf("Average Turnaround Time: %.2f%n", avTurnaroundTime);
+
+        guiStatistics=new GUIStatistics("SRTF",avWaitingTime , avTurnaroundTime);
+
     }
+
 
 
 }
