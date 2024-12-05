@@ -26,7 +26,6 @@ public abstract class Scheduler {
         for (Process process : processList) {
             totalTurnAroundTime += process.calculateTurnAroundTime();
         }
-        //return (int)Math.ceil(totalTurnAroundTime/processList.size());
         return (int)Math.ceil((double)totalTurnAroundTime/processList.size());
     }
 
