@@ -1,5 +1,7 @@
 package com.fcai.PriorityScheduling;
 
+import com.fcai.Main.Process;
+import com.fcai.Main.Scheduler;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
