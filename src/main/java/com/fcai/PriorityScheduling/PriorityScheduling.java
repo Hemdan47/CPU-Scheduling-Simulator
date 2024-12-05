@@ -17,7 +17,7 @@ public class PriorityScheduling extends Scheduler {
     @Override
     public void execute() {
         processList.sort(Comparator.comparingInt(Process::getArrivalTime));
-        int currentTime = 0;
+        int currentTime = contextSwitchingTime;
         for (Process process : processList) {
             process.setCompletionTime(0);
         }
@@ -28,16 +28,19 @@ public class PriorityScheduling extends Scheduler {
         for (int i = 0; i < processList.size(); i++) {
             List<Process> readyProcessList = new ArrayList<>();
             for (Process process : processList) {
-                if (process.getArrivalTime() > currentTime)
+                if (process.getArrivalTime() > currentTime - contextSwitchingTime)
                     break;
                 else if (process.getCompletionTime() != 0)
                     continue;
                 else
                     readyProcessList.add(process);
             }
-            readyProcessList.sort(Comparator.comparingInt(Process::getPriority));
+            readyProcessList.sort(Comparator.comparingInt(Process::getPriority).thenComparingInt(Process::getArrivalTime));
             Process currentProcess = readyProcessList.getFirst();
 
+            if (i == 0)
+                currentTime -= contextSwitchingTime;
+            
             guiGraphNeeds.add(new GUIGraphNeeds(currentProcess, currentTime, currentProcess.getBurstTime()));
 
             int completionTime = currentTime + currentProcess.getBurstTime();
