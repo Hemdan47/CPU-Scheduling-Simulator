@@ -13,32 +13,42 @@ public class Process {
     private final int priority;
     private int completionTime;
     public int quantum;
+    private int age;
 
-    public Process(String name, Color color, int burstTime, int arrivalTime , int priority , int quantum) {
+    public Process(String name, Color color, int burstTime, int arrivalTime, int priority, int quantum) {
         this.name = name;
         this.color = color;
         this.arrivalTime = arrivalTime;
         this.burstTime = burstTime;
         this.priority = priority;
         this.quantum = quantum;
+        this.age = 0;
     }
 
     public String getName() {
         return name;
     }
+
     public int getWaitingTime() {
         return waitingTime;
     }
+
     public Color getColor() {
         return color;
     }
+
     public int getArrivalTime() {
         return arrivalTime;
     }
+
     public int getBurstTime() {
         return burstTime;
     }
-    public void setBurstTime(int burstTime) {this.burstTime = burstTime;}
+
+    public void setBurstTime(int burstTime) {
+        this.burstTime = burstTime;
+    }
+
     public int getPriority() {
         return priority;
     }
@@ -58,18 +68,23 @@ public class Process {
     public void setWaitingTime(int waitingTime) {
         this.waitingTime = waitingTime;
     }
+
     public int getCompletionTime() {
         return completionTime;
     }
+
     public void setCompletionTime(int completionTime) {
         this.completionTime = completionTime;
     }
-    public int calculateTurnAroundTime(){
+
+    public int calculateTurnAroundTime() {
         return completionTime - arrivalTime;
     }
+
     public int getQuantum() {
         return quantum;
     }
+
     public void setQuantum(int quantum) {
         this.quantum = quantum;
     }
