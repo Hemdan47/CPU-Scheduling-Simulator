@@ -1,15 +1,18 @@
 package com.fcai.SRTF;
 
+import com.fcai.Main.GUIGraphNeeds;
+import com.fcai.Main.GUIStatistics;
 import com.fcai.Main.Process;
 import com.fcai.Main.Scheduler;
 
 import java.util.*;
 
 public class SRTF extends Scheduler {
+    //private List<GUINeeds> guiNeeds = new ArrayList<>();
 
-    public SRTF(List<Process> list) {
+    public SRTF(List<Process> processList) {
         this.contextSwitchingTime = 1;
-        this.processList = new ArrayList<>(list);
+        this.processList = new ArrayList<>(processList);
     }
 
     @Override
@@ -20,6 +23,7 @@ public class SRTF extends Scheduler {
 
         int numberOfProcesses = processList.size();
         int currentTime = 0;
+        int runningDuration=1;
 
         //ready queue contains process sorted with burst then priority
         PriorityQueue<Process> readyQueue = new PriorityQueue<>(Comparator.comparingInt(Process::getBurstTime).thenComparingInt(Process::getPriority));
@@ -70,11 +74,16 @@ public class SRTF extends Scheduler {
                 // context switching
                 System.out.printf("Switching from process %s to process %s at time %d\n",
                         lastProcess.getName(), currentProcess.getName(), currentTime);
+
+                runningDuration=currentTime; //Takiiii
                 currentTime += contextSwitchingTime;
+                runningDuration=currentTime-runningDuration;
                 executionStartTime = currentTime;
+
             } else if (lastProcess == null) {
                 executionStartTime = currentTime; // first process to start execution
             }
+            guiGraphNeeds.add(new GUIGraphNeeds(currentProcess , currentTime ,runningDuration));
 
             // execute the process for 1 unit of time
             currentProcess.setBurstTime(currentProcess.getBurstTime() - 1);
@@ -96,7 +105,6 @@ public class SRTF extends Scheduler {
                 // Re-add the process to the queue
                 readyQueue.add(currentProcess);
             }
-
             lastProcess = currentProcess; // Update the last executed process
         }
 
@@ -119,7 +127,12 @@ public class SRTF extends Scheduler {
         }
         processList = executedProcesses;
 
-        System.out.printf("Average Waiting Time: %.2f%n", (double) calculateAverageWaitingTime());
-        System.out.printf("Average Turnaround Time: %.2f%n", (double) calculateAverageTurnAroundTime());
+        double avWaitingTime=calculateAverageWaitingTime();
+        double avTurnaroundTime=calculateAverageTurnAroundTime();
+
+        System.out.printf("Average Waiting Time: %.2f%n", avWaitingTime);
+        System.out.printf("Average Turnaround Time: %.2f%n", avTurnaroundTime);
+
+        guiStatistics=new GUIStatistics("SRTF",avWaitingTime , avTurnaroundTime);
     }
 }

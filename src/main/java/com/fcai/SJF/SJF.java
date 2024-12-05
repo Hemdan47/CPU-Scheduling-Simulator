@@ -1,5 +1,6 @@
 package com.fcai.SJF;
 
+import com.fcai.Main.GUIGraphNeeds;
 import com.fcai.Main.Process;
 import com.fcai.Main.Scheduler;
 
@@ -49,6 +50,8 @@ public class SJF extends Scheduler {
             // executing and the burst time of that process
             selectedProcess.setCompletionTime(currentTime + selectedProcess.getBurstTime());
             selectedProcess.setWaitingTime(currentTime - selectedProcess.getArrivalTime());
+            guiGraphNeeds.add(new GUIGraphNeeds(selectedProcess, currentTime, selectedProcess.getBurstTime()));
+
             currentTime += selectedProcess.getBurstTime();
 
             executedProcesses.add(selectedProcess);

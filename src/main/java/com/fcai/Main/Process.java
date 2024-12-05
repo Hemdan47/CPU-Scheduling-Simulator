@@ -1,18 +1,20 @@
 package com.fcai.Main;
 
+import javafx.scene.paint.Color;
+
 import java.util.Objects;
 
 public class Process {
-    private String name;
-    private String color;
-    private int arrivalTime;
+    private final String name;
+    private final Color color;
+    private final int arrivalTime;
     private int waitingTime;
     private int burstTime;
-    private int priority;
+    private final int priority;
     private int completionTime;
     public int quantum;
 
-    public Process(String name, String color, int burstTime, int arrivalTime , int priority , int quantum) {
+    public Process(String name, Color color, int burstTime, int arrivalTime , int priority , int quantum) {
         this.name = name;
         this.color = color;
         this.arrivalTime = arrivalTime;
@@ -27,7 +29,7 @@ public class Process {
     public int getWaitingTime() {
         return waitingTime;
     }
-    public String getColor() {
+    public Color getColor() {
         return color;
     }
     public int getArrivalTime() {
@@ -40,16 +42,19 @@ public class Process {
     public int getPriority() {
         return priority;
     }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Process process = (Process) o;
         return arrivalTime == process.arrivalTime && waitingTime == process.waitingTime && burstTime == process.burstTime && priority == process.priority && completionTime == process.completionTime && Objects.equals(name, process.name) && Objects.equals(color, process.color);
     }
+
     @Override
     public int hashCode() {
         return Objects.hash(name, color, arrivalTime, waitingTime, burstTime, priority, completionTime);
     }
+
     public void setWaitingTime(int waitingTime) {
         this.waitingTime = waitingTime;
     }
