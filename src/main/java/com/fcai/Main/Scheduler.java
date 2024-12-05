@@ -13,14 +13,14 @@ public abstract class Scheduler {
         for (Process process : processList) {
             totalWaitingTime += process.getWaitingTime();
         }
-        return (int)Math.ceil(totalWaitingTime/processList.size());
+        return (int)Math.ceil((double)totalWaitingTime/processList.size());
     }
     public int calculateAverageTurnAroundTime() {
         int totalTurnAroundTime = 0;
         for (Process process : processList) {
             totalTurnAroundTime += process.calculateTurnAroundTime();
         }
-        return (int)Math.ceil(totalTurnAroundTime/processList.size());
+        return (int)Math.ceil((double)totalTurnAroundTime/processList.size());
     }
     public int getContextSwitchingTime() {
         return contextSwitchingTime;
