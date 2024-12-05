@@ -1,6 +1,7 @@
 package com.fcai.SJF;
 
 import com.fcai.Main.GUIGraphNeeds;
+import com.fcai.Main.GUIStatistics;
 import com.fcai.Main.Process;
 import com.fcai.Main.Scheduler;
 
@@ -68,9 +69,13 @@ public class SJF extends Scheduler {
         }
         processList = executedProcesses;
 
-        System.out.printf("Average Waiting Time: %.2f%n", (double) calculateAverageWaitingTime());
-        System.out.printf("Average Turnaround Time: %.2f%n", (double) calculateAverageTurnAroundTime());
+        double avWaitingTime=calculateAverageWaitingTime();
+        double avTurnaroundTime=calculateAverageTurnAroundTime();
 
+        System.out.printf("Average Waiting Time: %.2f%n", avWaitingTime);
+        System.out.printf("Average Turnaround Time: %.2f%n", avTurnaroundTime);
+
+        guiStatistics=new GUIStatistics("SJF",avWaitingTime , avTurnaroundTime);
 
     }
 

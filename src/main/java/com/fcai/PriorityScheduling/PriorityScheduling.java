@@ -1,6 +1,7 @@
 package com.fcai.PriorityScheduling;
 
 import com.fcai.Main.GUIGraphNeeds;
+import com.fcai.Main.GUIStatistics;
 import com.fcai.Main.Scheduler;
 import com.fcai.Main.Process;
 
@@ -62,9 +63,12 @@ public class PriorityScheduling extends Scheduler {
         }
 
         System.out.print('\n');
-        int averageWaitingTime = calculateAverageWaitingTime();
-        int averageTurnAroundTime = calculateAverageTurnAroundTime();
-        System.out.println("Average Waiting Time: " + averageWaitingTime);
-        System.out.println("Average Turn Around Time: " + averageTurnAroundTime);
+        double avWaitingTime=calculateAverageWaitingTime();
+        double avTurnaroundTime=calculateAverageTurnAroundTime();
+
+        System.out.printf("Average Waiting Time: %.2f%n", avWaitingTime);
+        System.out.printf("Average Turnaround Time: %.2f%n", avTurnaroundTime);
+
+        guiStatistics=new GUIStatistics("Priority Scheduling",avWaitingTime , avTurnaroundTime);
     }
 }
