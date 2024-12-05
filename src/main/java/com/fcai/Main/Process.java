@@ -10,6 +10,7 @@ public class Process {
     private final int arrivalTime;
     private int waitingTime;
     private int burstTime;
+    private int initialBurstTime;
     private final int priority;
     private int completionTime;
     public int quantum;
@@ -20,6 +21,7 @@ public class Process {
         this.color = color;
         this.arrivalTime = arrivalTime;
         this.burstTime = burstTime;
+        this.initialBurstTime = burstTime;
         this.priority = priority;
         this.quantum = quantum;
         this.age = 0;
@@ -89,4 +91,7 @@ public class Process {
         this.quantum = quantum;
     }
 
+    public int getInitialBurstTime() {
+        return initialBurstTime;
+    }
 }

@@ -33,12 +33,6 @@ public class SRTF extends Scheduler {
 
         int completedProcesses = 0;
 
-        //save initial burst to calculate waiting time in the end
-        Map<String, Integer> initialBurstTimeMap = new HashMap<>();
-        for (Process process : processList) {
-            initialBurstTimeMap.put(process.getName(), process.getBurstTime());
-        }
-
         Process lastProcess = null; //  track the last process being executed
         int executionStartTime = -1; // track when a process starts execution (begging of execution)
 
@@ -115,8 +109,7 @@ public class SRTF extends Scheduler {
 
         for (Process p : executedProcesses) {
             int turnAroundTime = p.getCompletionTime() - p.getArrivalTime();
-            int initialBurstTime = initialBurstTimeMap.get(p.getName());
-            int waitingTime = turnAroundTime - initialBurstTime;
+            int waitingTime = turnAroundTime - p.getInitialBurstTime();
 
             p.setWaitingTime(waitingTime);
             totalWaitingTime += waitingTime;

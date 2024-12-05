@@ -178,10 +178,6 @@ public class FCAI extends Scheduler {
 
         int currentTime = 0;
         List<Process> completedProcesses = new ArrayList<>();
-        Map<String, Integer> initialBurstTimeMap = new HashMap<>();
-        for (Process process : processList) {
-            initialBurstTimeMap.put(process.getName(), process.getBurstTime());
-        }
 
         while (!processList.isEmpty() || !readyQueue.isEmpty()) {
 
@@ -217,7 +213,6 @@ public class FCAI extends Scheduler {
             // If the process finishes during the first 40%, update completion time
             if (currentProcess.getBurstTime() == 0) {
                 currentProcess.setCompletionTime(currentTime);
-                currentProcess.setWaitingTime(currentProcess.calculateTurnAroundTime()-initialBurstTimeMap.get(currentProcess.getName()));
                 completedProcesses.add(currentProcess);
                 continue;
             }
@@ -255,7 +250,7 @@ public class FCAI extends Scheduler {
 
                 if (currentProcess.getBurstTime() == 0) {
                     currentProcess.setCompletionTime(currentTime);
-                    currentProcess.setWaitingTime(currentProcess.calculateTurnAroundTime()-initialBurstTimeMap.get(currentProcess.getName()));
+                    currentProcess.setWaitingTime(currentProcess.calculateTurnAroundTime()-currentProcess.getInitialBurstTime());
                     completedProcesses.add(currentProcess);
                     break;
                 }
