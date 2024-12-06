@@ -206,7 +206,8 @@ public class FCAI extends Scheduler {
             int executionTime = Math.min(first40Percent, currentProcess.getBurstTime());
             currentProcess.setBurstTime(currentProcess.getBurstTime() - executionTime);
             for (int i = 0; i < executionTime; i++) {
-                guiGraphNeeds.add(new GUIGraphNeeds(currentProcess, currentTime + i+1, 1));
+                // i+1
+                guiGraphNeeds.add(new GUIGraphNeeds(currentProcess, currentTime + i, 1));
             }
             currentTime += executionTime;
 
@@ -245,7 +246,8 @@ public class FCAI extends Scheduler {
 
                 // Continue executing current process
                 currentProcess.setBurstTime(currentProcess.getBurstTime() - 1);
-                guiGraphNeeds.add(new GUIGraphNeeds(currentProcess, currentTime +1, 1));
+                // currentTime+1
+                guiGraphNeeds.add(new GUIGraphNeeds(currentProcess, currentTime, 1));
                 currentTime++;
 
                 if (currentProcess.getBurstTime() == 0) {
@@ -266,6 +268,7 @@ public class FCAI extends Scheduler {
 
         processList = completedProcesses;
         for (Process p : processList) {
+            p.setWaitingTime(p.calculateTurnAroundTime() - p.getInitialBurstTime());
             System.out.printf("Process: %s, Waiting Time: %d, Turnaround Time: %d\n",
                     p.getName(), p.getWaitingTime(), p.calculateTurnAroundTime());
         }
@@ -276,7 +279,7 @@ public class FCAI extends Scheduler {
         System.out.printf("Average Waiting Time: %.2f%n", avWaitingTime);
         System.out.printf("Average Turnaround Time: %.2f%n", avTurnaroundTime);
 
-        guiStatistics=new GUIStatistics("SRTF",avWaitingTime , avTurnaroundTime);
+        guiStatistics=new GUIStatistics("FCAI",avWaitingTime , avTurnaroundTime);
 
     }
 
