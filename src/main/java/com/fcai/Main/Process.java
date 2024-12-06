@@ -94,4 +94,10 @@ public class Process {
     public int getInitialBurstTime() {
         return initialBurstTime;
     }
+
+    @Override
+    public String toString() {
+        return
+                "\t%s\t\t  %s\t\t\t%s\t\t %s\t\t %s".formatted(name, burstTime, arrivalTime, priority, quantum);
+    }
 }
