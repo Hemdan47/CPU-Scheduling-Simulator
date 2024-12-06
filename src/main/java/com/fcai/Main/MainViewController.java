@@ -99,13 +99,11 @@ public class MainViewController {
     }
 
     private void updateVisibility(RadioButton selectedRadioButton) {
-        // Hide everything by default
         contextSwitching.setVisible(true);
         threshold.setVisible(true);
         contextSwitchingLabel.setVisible(true);
         thresholdLabel.setVisible(true);
 
-        // Update visibility based on the selected radio button
         if (selectedRadioButton == sjf || selectedRadioButton == fcai) {
             threshold.setVisible(false);
             thresholdLabel.setVisible(false);
