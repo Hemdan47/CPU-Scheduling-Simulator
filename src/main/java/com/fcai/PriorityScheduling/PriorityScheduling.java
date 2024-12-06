@@ -41,7 +41,7 @@ public class PriorityScheduling extends Scheduler {
                 readyProcessList.sort(Comparator.comparingInt(Process::getPriority).thenComparingInt(Process::getArrivalTime));
                 Process currentProcess = readyProcessList.getFirst();
     
-                if (i == 0)
+                if (counter == 0)
                     currentTime -= contextSwitchingTime;
                 
                 guiGraphNeeds.add(new GUIGraphNeeds(currentProcess, currentTime, currentProcess.getBurstTime()));
