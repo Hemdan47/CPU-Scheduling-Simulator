@@ -18,7 +18,7 @@ public class PriorityScheduling extends Scheduler {
     @Override
     public void execute() {
         processList.sort(Comparator.comparingInt(Process::getArrivalTime));
-        int currentTime = contextSwitchingTime;
+        int currentTime = contextSwitchingTime, counter = 0;
         for (Process process : processList) {
             process.setCompletionTime(0);
         }
@@ -26,7 +26,7 @@ public class PriorityScheduling extends Scheduler {
         System.out.println("Time     Process     Waiting Time     Turnaround Time");
         System.out.println("_____________________________________________________");
 
-        for (int i = 0; i < processList.size(); i++) {
+        while (counter < processList.size()) {
             List<Process> readyProcessList = new ArrayList<>();
             for (Process process : processList) {
                 if (process.getArrivalTime() > currentTime - contextSwitchingTime)
@@ -36,30 +36,37 @@ public class PriorityScheduling extends Scheduler {
                 else
                     readyProcessList.add(process);
             }
-            readyProcessList.sort(Comparator.comparingInt(Process::getPriority).thenComparingInt(Process::getArrivalTime));
-            Process currentProcess = readyProcessList.getFirst();
 
-            if (i == 0)
-                currentTime -= contextSwitchingTime;
-            
-            guiGraphNeeds.add(new GUIGraphNeeds(currentProcess, currentTime, currentProcess.getBurstTime()));
-
-            int completionTime = currentTime + currentProcess.getBurstTime();
-            currentProcess.setCompletionTime(completionTime);
-
-            int turnaroundTime = currentProcess.calculateTurnAroundTime();
-
-            int waitingTime = turnaroundTime - currentProcess.getBurstTime();
-            currentProcess.setWaitingTime(waitingTime);
-
-            System.out.printf("%-9s%-12s%-17d%-15d%n", Integer.toString(currentTime) + '-' + completionTime, currentProcess.getName(), waitingTime, turnaroundTime);
-            System.out.println("_____________________________________________________");
-
-            int afterCSTime = completionTime + this.contextSwitchingTime;
-            System.out.printf("%-9sContext Switching%n", Integer.toString(completionTime) + '-' + afterCSTime);
-            System.out.println("_____________________________________________________");
-
-            currentTime = afterCSTime;
+            if (!readyProcessList.isEmpty()) {
+                readyProcessList.sort(Comparator.comparingInt(Process::getPriority).thenComparingInt(Process::getArrivalTime));
+                Process currentProcess = readyProcessList.getFirst();
+    
+                if (i == 0)
+                    currentTime -= contextSwitchingTime;
+                
+                guiGraphNeeds.add(new GUIGraphNeeds(currentProcess, currentTime, currentProcess.getBurstTime()));
+    
+                int completionTime = currentTime + currentProcess.getBurstTime();
+                currentProcess.setCompletionTime(completionTime);
+    
+                int turnaroundTime = currentProcess.calculateTurnAroundTime();
+    
+                int waitingTime = turnaroundTime - currentProcess.getBurstTime();
+                currentProcess.setWaitingTime(waitingTime);
+    
+                System.out.printf("%-9s%-12s%-17d%-15d%n", Integer.toString(currentTime) + '-' + completionTime, currentProcess.getName(), waitingTime, turnaroundTime);
+                System.out.println("_____________________________________________________");
+    
+                int afterCSTime = completionTime + contextSwitchingTime;
+                System.out.printf("%-9sContext Switching%n", Integer.toString(completionTime) + '-' + afterCSTime);
+                System.out.println("_____________________________________________________");
+    
+                currentTime = afterCSTime;
+                counter++;
+            }
+            else {
+                currentTime++;
+            }
         }
 
         System.out.print('\n');
