@@ -26,6 +26,8 @@ public class PriorityScheduling extends Scheduler {
         System.out.println("Time     Process     Waiting Time     Turnaround Time");
         System.out.println("_____________________________________________________");
 
+        List<Process> executedProcesses = new ArrayList<>();
+
         while (counter < processList.size()) {
             List<Process> readyProcessList = new ArrayList<>();
             for (Process process : processList) {
@@ -60,13 +62,29 @@ public class PriorityScheduling extends Scheduler {
     
                 currentTime = afterCSTime;
                 counter++;
+                executedProcesses.add(currentProcess);
             }
             else {
                 currentTime++;
             }
         }
 
-        System.out.print('\n');
+//        System.out.print('\n');
+        System.out.println("\nProcesses completion order:");
+        int totalWaitingTime = 0;
+        int totalTurnAroundTime = 0;
+        for (Process p : executedProcesses) {
+            int turnAroundTime = p.getCompletionTime() - p.getArrivalTime();
+            int waitingTime = turnAroundTime - p.getInitialBurstTime();
+
+            p.setWaitingTime(waitingTime);
+            totalWaitingTime += waitingTime;
+            totalTurnAroundTime += turnAroundTime;
+
+            System.out.printf("Process: %s, Waiting Time: %d, Turnaround Time: %d\n",
+                    p.getName(), waitingTime, turnAroundTime);
+        }
+        processList = executedProcesses;
         double avWaitingTime=calculateAverageWaitingTime();
         double avTurnaroundTime=calculateAverageTurnAroundTime();
 

@@ -26,9 +26,9 @@
             <RadioButton fx:id="srtfStarvation" layoutX="14.0" layoutY="88.0" mnemonicParsing="false" text="SRTF Solving Starvation" toggleGroup="$schedulingAlgorithm" />
             <RadioButton fx:id="sjfStarvation" layoutX="14.0" layoutY="107.0" mnemonicParsing="false" text="SJF Solving Starvation" toggleGroup="$schedulingAlgorithm" />
             <TextField fx:id="contextSwitching" layoutX="117.0" layoutY="130.0" prefHeight="26.0" prefWidth="73.0" />
-            <Label layoutX="16.0" layoutY="135.0" text="Context Switching:" />
+            <Label fx:id="contextSwitchingLabel" layoutX="16.0" layoutY="135.0" text="Context Switching:" />
             <TextField fx:id="threshold" layoutX="117.0" layoutY="165.0" prefHeight="26.0" prefWidth="73.0" />
-            <Label layoutX="16.0" layoutY="170.0" text="Threshold:" />
+            <Label  fx:id="thresholdLabel" layoutX="16.0" layoutY="170.0" text="Threshold:" />
             <Button fx:id="executeBtn" layoutX="71.0" layoutY="195.0" mnemonicParsing="false" onAction="#execute" text="Execute" />
          </children>
       </AnchorPane>
