@@ -69,7 +69,8 @@ public class MainViewController {
     @FXML
     private RadioButton srtf;
 
-    private ArrayList<Process>processList;
+    private ArrayList<Process> processList;
+
     public MainViewController() {
         processList = new ArrayList<>();
     }
@@ -83,33 +84,23 @@ public class MainViewController {
         int arrival = Integer.parseInt(arrivalTime.getText());
         int processPriority = Integer.parseInt(priority.getText());
         int processQuantum = Integer.parseInt(quantum.getText());
-        Process process = new Process(name , Color.rgb(colorR , colorG , colorB) , burst, arrival, processPriority, processQuantum);
+        Process process = new Process(name, Color.rgb(colorR, colorG, colorB), burst, arrival, processPriority, processQuantum);
         processList.add(process);
         listView.getItems().add(process);
     }
 
-    public void execute(ActionEvent event){
+    public void execute(ActionEvent event) {
         int contextSwitchingValue = Integer.parseInt(contextSwitching.getText());
 
-        if(sjf.isSelected()){
+        if (sjf.isSelected()) {
             s = new SJF(processList);
-        }
-        else if(ps.isSelected()){
+        } else if (ps.isSelected()) {
             s = new PriorityScheduling(processList);
-        }
-        else if(fcai.isSelected()){
+        } else if (fcai.isSelected()) {
             s = new FCAI(processList);
-        }
-        else{
+        } else {
             s = new SRTF(processList);
         }
-
-
-
-
-
-
-
 
 
         /// /////////////////////////////////////////////////////
@@ -215,46 +206,42 @@ public class MainViewController {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     void drawStaticParts() {
-        gc.setFill(Color.BLACK);
+
+        int totalInitialBurstTime = calculateTotalInitialBurstTime();
 
         //labels
         for (int i = 0; i < processList.size(); i++) {
-            gc.fillText(processList.get(i).getName(), startX, calcProcessPosition(i));
+            gc.setFill(Color.BLACK);
+            int y = calcProcessPosition(i);
+            gc.fillText(processList.get(i).getName(), startX, y);
+
+
+            gc.setStroke(Color.GRAY);
+            gc.setLineDashes(5);
+            gc.strokeLine(startX + BURST_WIDTH, y, startX + (totalInitialBurstTime+20) * BURST_WIDTH, y);
+            gc.setLineDashes(0);
         }
+
+        int processPosition = calcProcessPosition(processList.size());
+        for (int i = 0; i <= totalInitialBurstTime+20; i++) {
+            gc.setFill(Color.BLACK);
+            int x = startX + (BURST_WIDTH * (i + 1));
+
+            gc.fillText(String.valueOf(i), x-5, processPosition-(PROCESS_HEIGHT*0.75)+10);
+
+            gc.setStroke(Color.GRAY);
+            gc.setLineDashes(5);
+            gc.strokeLine(x, 10, x, processPosition-(PROCESS_HEIGHT*0.75)-5);
+        }
+    }
+
+    int calculateTotalInitialBurstTime() {
+        int totalInitialBurstTime = 0;
+        for (int i = 0; i < processList.size(); i++) {
+            totalInitialBurstTime += processList.get(i).getBurstTime();
+        }
+        return totalInitialBurstTime;
     }
 
     public void drawDynamicParts(Process currentProcess, int currentTime, int runningDuration, boolean isBurstFinish) {
@@ -333,38 +320,38 @@ public class MainViewController {
         }
 
         for (int i = 0; i < processList.size(); i++) {
-            Text id = new Text(String.valueOf(i+1));
-            processesInfoTable.add(id, 0, i+1);
+            Text id = new Text(String.valueOf(i + 1));
+            processesInfoTable.add(id, 0, i + 1);
 
             Text name = new Text(processList.get(i).getName());
-            processesInfoTable.add(name, 1, i+1);
+            processesInfoTable.add(name, 1, i + 1);
             Rectangle color = new Rectangle();
             color.setFill(processList.get(i).getColor());
             color.setHeight(20);
             color.setWidth(30);
-            processesInfoTable.add(color, 2, i+1);
+            processesInfoTable.add(color, 2, i + 1);
 
             Text priority = new Text(String.valueOf(processList.get(i).getPriority()));
-            processesInfoTable.add(priority, 3, i+1);
+            processesInfoTable.add(priority, 3, i + 1);
 
             Text quantum = new Text(String.valueOf(processList.get(i).getQuantum()));
-            processesInfoTable.add(quantum, 4, i+1);
+            processesInfoTable.add(quantum, 4, i + 1);
 
             Text burstTime = new Text(String.valueOf(processList.get(i).getInitialBurstTime()));
-            processesInfoTable.add(burstTime, 5, i+1);
+            processesInfoTable.add(burstTime, 5, i + 1);
 
             Text arrivalTime = new Text(String.valueOf(processList.get(i).getArrivalTime()));
-            processesInfoTable.add(arrivalTime, 6, i+1);
+            processesInfoTable.add(arrivalTime, 6, i + 1);
 
             Text waitingTime = new Text(String.valueOf(processList.get(i).getWaitingTime()));
-            processesInfoTable.add(waitingTime, 7, i+1);
+            processesInfoTable.add(waitingTime, 7, i + 1);
 
             int turnaroundTime = processList.get(i).getCompletionTime() - processList.get(i).getArrivalTime();
             Text turnaroundTimeText = new Text(String.valueOf(turnaroundTime));
-            processesInfoTable.add(turnaroundTimeText, 8, i+1);
+            processesInfoTable.add(turnaroundTimeText, 8, i + 1);
 
             Text completionTime = new Text(String.valueOf(processList.get(i).getCompletionTime()));
-            processesInfoTable.add(completionTime, 9, i+1);
+            processesInfoTable.add(completionTime, 9, i + 1);
         }
 
         processesInfoTable.setAlignment(Pos.TOP_CENTER);
