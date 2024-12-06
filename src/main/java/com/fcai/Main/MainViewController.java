@@ -3,7 +3,9 @@ package com.fcai.Main;
 import com.fcai.FCAI.FCAI;
 import com.fcai.PriorityScheduling.PriorityScheduling;
 import com.fcai.SJF.SJF;
+import com.fcai.SJF.SJFstarvation;
 import com.fcai.SRTF.SRTF;
+import com.fcai.SRTF.SRTFstarvation;
 import javafx.animation.AnimationTimer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -44,12 +46,15 @@ public class MainViewController {
     private Button addProcessButton;
     @FXML
     private TextField processName;
+    //    @FXML
+//    private TextField processColorR;
+//    @FXML
+//    private TextField processColorG;
+//    @FXML
+//    private TextField processColorB;
     @FXML
-    private TextField processColorR;
-    @FXML
-    private TextField processColorG;
-    @FXML
-    private TextField processColorB;
+    private ColorPicker processColorPicker;
+
     @FXML
     private TextField burstTime;
     @FXML
@@ -61,6 +66,8 @@ public class MainViewController {
     @FXML
     private TextField contextSwitching;
     @FXML
+    private TextField threshold;
+    @FXML
     private RadioButton sjf;
     @FXML
     private RadioButton ps;
@@ -68,6 +75,11 @@ public class MainViewController {
     private RadioButton fcai;
     @FXML
     private RadioButton srtf;
+    @FXML
+    private RadioButton srtfStarvation;
+    @FXML
+    private RadioButton sjfStarvation;
+
 
     private ArrayList<Process> processList;
 
@@ -77,29 +89,35 @@ public class MainViewController {
 
     public void addProcess(ActionEvent event) {
         String name = processName.getText();
-        int colorR = Integer.parseInt(processColorR.getText());
-        int colorG = Integer.parseInt(processColorG.getText());
-        int colorB = Integer.parseInt(processColorB.getText());
+        Color color = processColorPicker.getValue();
+
         int burst = Integer.parseInt(burstTime.getText());
         int arrival = Integer.parseInt(arrivalTime.getText());
         int processPriority = Integer.parseInt(priority.getText());
         int processQuantum = Integer.parseInt(quantum.getText());
-        Process process = new Process(name, Color.rgb(colorR, colorG, colorB), burst, arrival, processPriority, processQuantum);
+        Process process = new Process(name, color, burst, arrival, processPriority, processQuantum);
         processList.add(process);
         listView.getItems().add(process);
     }
 
+
     public void execute(ActionEvent event) {
         int contextSwitchingValue = Integer.parseInt(contextSwitching.getText());
+        int thresholdValue = Integer.parseInt(threshold.getText());
+
 
         if (sjf.isSelected()) {
             s = new SJF(processList);
         } else if (ps.isSelected()) {
-            s = new PriorityScheduling(processList , contextSwitchingValue);
+            s = new PriorityScheduling(processList, contextSwitchingValue);
         } else if (fcai.isSelected()) {
             s = new FCAI(processList);
-        } else {
-            s = new SRTF(processList , contextSwitchingValue);
+        } else if (srtf.isSelected()) {
+            s = new SRTF(processList, contextSwitchingValue);
+        } else if (srtfStarvation.isSelected()) {
+            s = new SRTFstarvation(processList, contextSwitchingValue, thresholdValue);
+        } else if (sjfStarvation.isSelected()) {
+            s = new SJFstarvation(processList, thresholdValue);
         }
 
 
@@ -219,20 +237,20 @@ public class MainViewController {
 
             gc.setStroke(Color.GRAY);
             gc.setLineDashes(5);
-            gc.strokeLine(startX + BURST_WIDTH, y, startX + (totalInitialBurstTime+20) * BURST_WIDTH, y);
+            gc.strokeLine(startX + BURST_WIDTH, y, startX + (totalInitialBurstTime + 20) * BURST_WIDTH, y);
             gc.setLineDashes(0);
         }
 
         int processPosition = calcProcessPosition(processList.size());
-        for (int i = 0; i <= totalInitialBurstTime+20; i++) {
+        for (int i = 0; i <= totalInitialBurstTime + 20; i++) {
             gc.setFill(Color.BLACK);
             int x = startX + (BURST_WIDTH * (i + 1));
 
-            gc.fillText(String.valueOf(i), x-5, processPosition-(PROCESS_HEIGHT*0.75)+10);
+            gc.fillText(String.valueOf(i), x - 5, processPosition - (PROCESS_HEIGHT * 0.75) + 10);
 
             gc.setStroke(Color.GRAY);
             gc.setLineDashes(5);
-            gc.strokeLine(x, 10, x, processPosition-(PROCESS_HEIGHT*0.75)-5);
+            gc.strokeLine(x, 10, x, processPosition - (PROCESS_HEIGHT * 0.75) - 5);
         }
     }
 
@@ -247,7 +265,7 @@ public class MainViewController {
     public void drawDynamicParts(Process currentProcess, int currentTime, int runningDuration, boolean isBurstFinish) {
         gc.setFill(currentProcess.getColor());
 
-        int distantX = ( currentTime+1) * BURST_WIDTH;
+        int distantX = (currentTime + 1) * BURST_WIDTH;
         //if (distantX <= 0) distantX = BURST_WIDTH;
 
         int processPosition = calcProcessPosition(processList.indexOf(currentProcess));

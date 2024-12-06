@@ -8,9 +8,10 @@
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.fcai.Main.MainViewController">
+<?import javafx.scene.control.ColorPicker?>
+<AnchorPane prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.fcai.Main.MainViewController">
    <children>
-      <ListView fx:id="listView" layoutX="14.0" layoutY="57.0" prefHeight="321.0" prefWidth="334.0" />
+      <ListView fx:id="listView" layoutX="14.0" layoutY="57.0" prefHeight="401.0" prefWidth="334.0" />
       <Label layoutX="146.0" layoutY="5.0" text="Processes List" />
       <AnchorPane layoutX="371.0" layoutY="14.0" prefHeight="156.0" prefWidth="210.0" style="-fx-background-color: LightGrey; -fx-border-color: black;">
          <children>
@@ -22,28 +23,33 @@
             <RadioButton fx:id="ps" layoutX="14.0" layoutY="32.0" mnemonicParsing="false" text="Priority Scheduling" toggleGroup="$schedulingAlgorithm" />
             <RadioButton fx:id="fcai" layoutX="14.0" layoutY="50.0" mnemonicParsing="false" text="FCAI Scheduling" toggleGroup="$schedulingAlgorithm" />
             <RadioButton fx:id="srtf" layoutX="14.0" layoutY="69.0" mnemonicParsing="false" text="Shortest-Remaining Time First" toggleGroup="$schedulingAlgorithm" />
-            <TextField fx:id="contextSwitching" layoutX="117.0" layoutY="91.0" prefHeight="26.0" prefWidth="73.0" />
-            <Label layoutX="16.0" layoutY="95.0" text="Context Switching:" />
-            <Button fx:id="executeBtn" layoutX="71.0" layoutY="125.0" mnemonicParsing="false" onAction="#execute" text="Execute" />
+            <RadioButton fx:id="srtfStarvation" layoutX="14.0" layoutY="88.0" mnemonicParsing="false" text="SRTF Solving Starvation" toggleGroup="$schedulingAlgorithm" />
+            <RadioButton fx:id="sjfStarvation" layoutX="14.0" layoutY="107.0" mnemonicParsing="false" text="SJF Solving Starvation" toggleGroup="$schedulingAlgorithm" />
+            <TextField fx:id="contextSwitching" layoutX="117.0" layoutY="130.0" prefHeight="26.0" prefWidth="73.0" />
+            <Label layoutX="16.0" layoutY="135.0" text="Context Switching:" />
+            <TextField fx:id="threshold" layoutX="117.0" layoutY="165.0" prefHeight="26.0" prefWidth="73.0" />
+            <Label layoutX="16.0" layoutY="170.0" text="Threshold:" />
+            <Button fx:id="executeBtn" layoutX="71.0" layoutY="195.0" mnemonicParsing="false" onAction="#execute" text="Execute" />
          </children>
       </AnchorPane>
-      <AnchorPane layoutX="371.0" layoutY="173.0" prefHeight="204.0" prefWidth="210.0" style="-fx-background-color: LightGrey; -fx-border-color: black;">
+      <AnchorPane layoutX="371.0" layoutY="250.0" prefHeight="204.0" prefWidth="210.0" style="-fx-background-color: LightGrey; -fx-border-color: black;">
          <children>
-            <Button fx:id="addProcessButton" layoutX="62.0" layoutY="170.0" mnemonicParsing="false" onAction="#addProcess" text="Add Process" />
-            <TextField fx:id="processName" layoutX="110.0" layoutY="8.0" prefHeight="26.0" prefWidth="94.0" />
-            <TextField fx:id="processColorB" layoutX="174.0" layoutY="34.0" prefHeight="26.0" prefWidth="30.0" />
-            <TextField fx:id="processColorG" layoutX="142.0" layoutY="34.0" prefHeight="26.0" prefWidth="30.0" />
-            <TextField fx:id="processColorR" layoutX="110.0" layoutY="34.0" prefHeight="26.0" prefWidth="30.0" />
-            <TextField fx:id="burstTime" layoutX="110.0" layoutY="60.0" prefHeight="26.0" prefWidth="94.0" />
-            <TextField fx:id="arrivalTime" layoutX="110.0" layoutY="86.0" prefHeight="26.0" prefWidth="94.0" />
-            <TextField fx:id="priority" layoutX="110.0" layoutY="112.0" prefHeight="26.0" prefWidth="94.0" />
-            <TextField fx:id="quantum" layoutX="110.0" layoutY="138.0" prefHeight="26.0" prefWidth="94.0" />
-            <Label layoutX="14.0" layoutY="13.0" text="Process Name:" />
-            <Label layoutX="14.0" layoutY="39.0" text="Color(RGB):" />
-            <Label layoutX="14.0" layoutY="65.0" text="Burst Time:" />
-            <Label layoutX="14.0" layoutY="91.0" text="Arrival Time:" />
-            <Label layoutX="14.0" layoutY="117.0" text="Priority:" />
-            <Label layoutX="14.0" layoutY="143.0" text="Quantum:" />
+            <Button fx:id="addProcessButton" layoutX="62.0" layoutY="180.0" mnemonicParsing="false" onAction="#addProcess" text="Add Process" />
+            <TextField fx:id="processName" layoutX="110.0" layoutY="9.0" prefHeight="26.0" prefWidth="94.0" />
+<!--            <TextField fx:id="processColorB" layoutX="174.0" layoutY="35.0" prefHeight="26.0" prefWidth="30.0" />-->
+<!--            <TextField fx:id="processColorG" layoutX="142.0" layoutY="35.0" prefHeight="26.0" prefWidth="30.0" />-->
+<!--            <TextField fx:id="processColorR" layoutX="110.0" layoutY="35.0" prefHeight="26.0" prefWidth="30.0" />-->
+            <ColorPicker fx:id="processColorPicker" layoutX="174.0" layoutY="35.0" prefHeight="26.0" prefWidth="30.0"/>
+            <TextField fx:id="burstTime" layoutX="110.0" layoutY="61.0" prefHeight="26.0" prefWidth="94.0" />
+            <TextField fx:id="arrivalTime" layoutX="110.0" layoutY="87.0" prefHeight="26.0" prefWidth="94.0" />
+            <TextField fx:id="priority" layoutX="110.0" layoutY="113.0" prefHeight="26.0" prefWidth="94.0" />
+            <TextField fx:id="quantum" layoutX="110.0" layoutY="139.0" prefHeight="26.0" prefWidth="94.0" />
+            <Label layoutX="14.0" layoutY="14.0" text="Process Name:" />
+            <Label layoutX="14.0" layoutY="40.0" text="Color:" />
+            <Label layoutX="14.0" layoutY="66.0" text="Burst Time:" />
+            <Label layoutX="14.0" layoutY="92.0" text="Arrival Time:" />
+            <Label layoutX="14.0" layoutY="118.0" text="Priority:" />
+            <Label layoutX="14.0" layoutY="144.0" text="Quantum:" />
          </children>
       </AnchorPane>
       <Label layoutX="39.0" layoutY="32.0" text="Name" />

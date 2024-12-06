@@ -1,5 +1,7 @@
 package com.fcai.SRTF;
 
+import com.fcai.Main.GUIGraphNeeds;
+import com.fcai.Main.GUIStatistics;
 import com.fcai.Main.Process;
 import com.fcai.Main.Scheduler;
 
@@ -22,6 +24,7 @@ public class SRTFstarvation extends Scheduler {
 
         int numberOfProcesses = processList.size();
         int currentTime = 0;
+        int runningDuration = 1;
 
         //ready queue contains process sorted with burst then priority
         PriorityQueue<Process> readyQueue = new PriorityQueue<>(Comparator.comparingInt(Process::getBurstTime).thenComparingInt(Process::getPriority));
@@ -54,12 +57,24 @@ public class SRTFstarvation extends Scheduler {
                 }
             }
             Process starvedProcess = null;
+
+            List<Process> thresholdExceeded = new ArrayList<>();
             for (Process process : readyQueue) {
                 if (process.getAge() >= threshold) {
-                    starvedProcess = process;
-                    break;
+                    thresholdExceeded.add(process);
                 }
+
             }
+            thresholdExceeded.sort(Comparator.comparingInt(Process::getAge).thenComparingInt(Process::getPriority));
+            if (!thresholdExceeded.isEmpty()) {
+                starvedProcess = thresholdExceeded.get(0);
+            }
+//            for (Process process : readyQueue) {
+//                if (process.getAge() >= threshold) {
+//                    starvedProcess = process;
+//                    break;
+//                }
+//            }
             Process currentProcess;
             //boolean isStarvationSwitch = false;
 
@@ -95,7 +110,12 @@ public class SRTFstarvation extends Scheduler {
                     currentProcess.setBurstTime(currentProcess.getBurstTime() - 1);
                     q--;
                 }
-                currentTime += (currentProcess.getQuantum() - q);
+                int executionTime = currentProcess.getQuantum() - q;
+                for (int i = 0; i < executionTime; i++) {
+                    // i+1
+                    guiGraphNeeds.add(new GUIGraphNeeds(currentProcess, currentTime + i, 1));
+                }
+                currentTime += (executionTime);
                 currentProcess.setAge(0);
                 if (currentProcess.getBurstTime() == 0) {
                     System.out.printf("%-15s%-15d%-25d%-15d%-15d\n",
@@ -140,6 +160,8 @@ public class SRTFstarvation extends Scheduler {
                 executionStartTime = currentTime; // first process to start execution
             }
 
+            guiGraphNeeds.add(new GUIGraphNeeds(currentProcess, currentTime, runningDuration));
+
             // execute the process for 1 unit of time
             currentProcess.setBurstTime(currentProcess.getBurstTime() - 1);
             currentTime++;
@@ -183,7 +205,13 @@ public class SRTFstarvation extends Scheduler {
         }
         processList = executedProcesses;
 
-        System.out.printf("Average Waiting Time: %.2f%n", (double) calculateAverageWaitingTime());
-        System.out.printf("Average Turnaround Time: %.2f%n", (double) calculateAverageTurnAroundTime());
+        double avWaitingTime = calculateAverageWaitingTime();
+        double avTurnaroundTime = calculateAverageTurnAroundTime();
+
+        System.out.printf("Average Waiting Time: %.2f%n", avWaitingTime);
+        System.out.printf("Average Turnaround Time: %.2f%n", avTurnaroundTime);
+
+        guiStatistics = new GUIStatistics("SRTF", avWaitingTime, avTurnaroundTime);
+
     }
 }
