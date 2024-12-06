@@ -247,8 +247,8 @@ public class MainViewController {
     public void drawDynamicParts(Process currentProcess, int currentTime, int runningDuration, boolean isBurstFinish) {
         gc.setFill(currentProcess.getColor());
 
-        int distantX = currentTime * BURST_WIDTH;
-        if (distantX == 0) distantX = BURST_WIDTH;
+        int distantX = ( currentTime+1) * BURST_WIDTH;
+        //if (distantX <= 0) distantX = BURST_WIDTH;
 
         int processPosition = calcProcessPosition(processList.indexOf(currentProcess));
 
