@@ -95,11 +95,11 @@ public class MainViewController {
         if (sjf.isSelected()) {
             s = new SJF(processList);
         } else if (ps.isSelected()) {
-            s = new PriorityScheduling(processList);
+            s = new PriorityScheduling(processList , contextSwitchingValue);
         } else if (fcai.isSelected()) {
             s = new FCAI(processList);
         } else {
-            s = new SRTF(processList);
+            s = new SRTF(processList , contextSwitchingValue);
         }
 
 

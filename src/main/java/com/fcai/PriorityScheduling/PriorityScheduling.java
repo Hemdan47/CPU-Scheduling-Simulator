@@ -10,9 +10,9 @@ import java.util.Comparator;
 import java.util.List;
 
 public class PriorityScheduling extends Scheduler {
-    public PriorityScheduling(List<Process> processList) {
+    public PriorityScheduling(List<Process> processList , int contextSwitchingTime) {
         this.processList = new ArrayList<>(processList);
-        this.contextSwitchingTime = 1;
+        this.contextSwitchingTime = contextSwitchingTime;
     }
 
     @Override
