@@ -10,8 +10,8 @@ import java.util.*;
 public class SRTF extends Scheduler {
     //private List<GUINeeds> guiNeeds = new ArrayList<>();
 
-    public SRTF(List<Process> processList , int contextSwitchingTime) {
-        this.contextSwitchingTime = contextSwitchingTime;
+    public SRTF(List<Process> processList,int contextSwitch) {
+        this.contextSwitchingTime = contextSwitch;
         this.processList = new ArrayList<>(processList);
     }
 

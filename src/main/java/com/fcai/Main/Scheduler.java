@@ -7,6 +7,8 @@ public abstract class Scheduler {
     protected List<GUIGraphNeeds> guiGraphNeeds =new ArrayList<>();
     protected GUIStatistics guiStatistics;
     protected int contextSwitchingTime;
+    protected int threshold;
+
 
     public boolean addProcess(Process process) {
         return processList.add(process);
@@ -32,7 +34,9 @@ public abstract class Scheduler {
     public int getContextSwitchingTime() {
         return contextSwitchingTime;
     }
-
+    public int getThreshold(){
+        return threshold;
+    }
     public abstract void execute();
 
 

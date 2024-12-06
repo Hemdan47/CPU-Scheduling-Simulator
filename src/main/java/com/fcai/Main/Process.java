@@ -66,7 +66,12 @@ public class Process {
     public int hashCode() {
         return Objects.hash(name, color, arrivalTime, waitingTime, burstTime, priority, completionTime);
     }
-
+    public void setAge(int age){
+        this.age=age;
+    }
+    public int getAge(){
+        return age;
+    }
     public void setWaitingTime(int waitingTime) {
         this.waitingTime = waitingTime;
     }
