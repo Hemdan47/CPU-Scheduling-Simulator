@@ -10,15 +10,15 @@ import java.util.Comparator;
 import java.util.List;
 
 public class PriorityScheduling extends Scheduler {
-    public PriorityScheduling(List<Process> processList) {
+    public PriorityScheduling(List<Process> processList , int contextSwitchingTime) {
         this.processList = new ArrayList<>(processList);
-        this.contextSwitchingTime = 1;
+        this.contextSwitchingTime = contextSwitchingTime;
     }
 
     @Override
     public void execute() {
         processList.sort(Comparator.comparingInt(Process::getArrivalTime));
-        int currentTime = contextSwitchingTime, counter = 0;
+        int currentTime = 0, counter = 0;
         for (Process process : processList) {
             process.setCompletionTime(0);
         }
@@ -26,10 +26,12 @@ public class PriorityScheduling extends Scheduler {
         System.out.println("Time     Process     Waiting Time     Turnaround Time");
         System.out.println("_____________________________________________________");
 
+        List<Process> executedProcesses = new ArrayList<>();
+
         while (counter < processList.size()) {
             List<Process> readyProcessList = new ArrayList<>();
             for (Process process : processList) {
-                if (process.getArrivalTime() > currentTime - contextSwitchingTime)
+                if (process.getArrivalTime() > currentTime)
                     break;
                 else if (process.getCompletionTime() != 0)
                     continue;
@@ -40,9 +42,6 @@ public class PriorityScheduling extends Scheduler {
             if (!readyProcessList.isEmpty()) {
                 readyProcessList.sort(Comparator.comparingInt(Process::getPriority).thenComparingInt(Process::getArrivalTime));
                 Process currentProcess = readyProcessList.getFirst();
-    
-                if (counter == 0)
-                    currentTime -= contextSwitchingTime;
                 
                 guiGraphNeeds.add(new GUIGraphNeeds(currentProcess, currentTime, currentProcess.getBurstTime()));
     
@@ -63,13 +62,29 @@ public class PriorityScheduling extends Scheduler {
     
                 currentTime = afterCSTime;
                 counter++;
+                executedProcesses.add(currentProcess);
             }
             else {
                 currentTime++;
             }
         }
 
-        System.out.print('\n');
+//        System.out.print('\n');
+        System.out.println("\nProcesses completion order:");
+        int totalWaitingTime = 0;
+        int totalTurnAroundTime = 0;
+        for (Process p : executedProcesses) {
+            int turnAroundTime = p.getCompletionTime() - p.getArrivalTime();
+            int waitingTime = turnAroundTime - p.getInitialBurstTime();
+
+            p.setWaitingTime(waitingTime);
+            totalWaitingTime += waitingTime;
+            totalTurnAroundTime += turnAroundTime;
+
+            System.out.printf("Process: %s, Waiting Time: %d, Turnaround Time: %d\n",
+                    p.getName(), waitingTime, turnAroundTime);
+        }
+        processList = executedProcesses;
         double avWaitingTime=calculateAverageWaitingTime();
         double avTurnaroundTime=calculateAverageTurnAroundTime();
 

@@ -10,10 +10,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class SJF extends Scheduler {
-    public SJF(List<Process> processList) {
+public class SJFstarvation extends Scheduler {
+    public SJFstarvation(List<Process> processList,int threshold) {
         this.processList = new ArrayList<>(processList);
-        this.contextSwitchingTime = 0;
+        this.threshold=threshold;
     }
 
     @Override
@@ -43,11 +43,25 @@ public class SJF extends Scheduler {
             }
 
             // Sort available processes by burst time (SJF)
-            availableProcesses.sort(Comparator.comparingInt(Process::getBurstTime));
+            availableProcesses.sort(Comparator.comparingInt(Process::getBurstTime).thenComparingInt(Process::getPriority));
 
             // Select the process with the shortest burst time
             Process selectedProcess = availableProcesses.get(0);
             processList.remove(selectedProcess);
+
+            List<Process> thresholdExceeded = new ArrayList<>();
+            for (Process process : availableProcesses) {
+                if (process.getAge() >= threshold) {
+                    thresholdExceeded.add(process);
+                }
+            }
+            thresholdExceeded.sort(Comparator.comparingInt(Process::getAge).thenComparingInt(Process::getPriority));
+            if(!thresholdExceeded.isEmpty()){
+                processList.add(selectedProcess);
+                selectedProcess = thresholdExceeded.get(0);
+                thresholdExceeded.remove(selectedProcess);
+                processList.remove(selectedProcess);
+            }
 
             // completion time = current time when the process starts
             // executing and the burst time of that process
@@ -57,12 +71,18 @@ public class SJF extends Scheduler {
 
             int executionStartTime = currentTime;
             currentTime += selectedProcess.getBurstTime();
+
+            for (Process process: availableProcesses){
+                process.setAge(process.getAge()+selectedProcess.getBurstTime());
+            }
             System.out.printf("%-10s%-15d%-25d%-15d%-15d\n",
                     selectedProcess.getName(),
                     selectedProcess.getArrivalTime(),
-                    selectedProcess.getBurstTime(),
+                    0,
                     executionStartTime,
                     currentTime);
+
+            selectedProcess.setAge(0);
 
             executedProcesses.add(selectedProcess);
         }
