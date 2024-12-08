@@ -215,6 +215,7 @@ public class FCAI extends Scheduler {
             if (currentProcess.getBurstTime() == 0) {
                 currentProcess.setCompletionTime(currentTime);
                 completedProcesses.add(currentProcess);
+                System.out.println("Process name: %s,   FCAI factor: Completed".formatted(currentProcess.getName()));
                 continue;
             }
 
@@ -241,6 +242,8 @@ public class FCAI extends Scheduler {
                     readyQueue.add(currentProcess);
                     readyQueue.remove(highestPriorityProcess);
                     readyQueue.add(0 , highestPriorityProcess);
+                    System.out.println("Process name: %s,   FCAI factor: %f -> %f"
+                            .formatted(currentProcess.getName() , currentProcessFcaiFactor , calculateFCAIFactor(currentProcess)));
                     break;
                 }
 
@@ -254,6 +257,7 @@ public class FCAI extends Scheduler {
                     currentProcess.setCompletionTime(currentTime);
                     currentProcess.setWaitingTime(currentProcess.calculateTurnAroundTime()-currentProcess.getInitialBurstTime());
                     completedProcesses.add(currentProcess);
+                    System.out.println("Process name: %s,   FCAI factor: Completed".formatted(currentProcess.getName()));
                     break;
                 }
             }
@@ -262,6 +266,8 @@ public class FCAI extends Scheduler {
             if (currentProcess.getBurstTime() > 0 && currentProcess.getQuantum() == quantum) {
                 currentProcess.setQuantum(currentProcess.getQuantum() + 2);
                 readyQueue.add(currentProcess);
+                System.out.println("Process name: %s,   FCAI factor: %f -> %f"
+                        .formatted(currentProcess.getName() , currentProcessFcaiFactor , calculateFCAIFactor(currentProcess)));
             }
 
         }
