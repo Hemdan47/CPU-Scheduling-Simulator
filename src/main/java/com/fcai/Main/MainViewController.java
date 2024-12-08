@@ -111,8 +111,9 @@ public class MainViewController {
         Canvas canvas = new Canvas(2000, 1000);
         gc = canvas.getGraphicsContext2D();
 
-        drawStaticParts();
+
         s.execute();
+        drawStaticParts();
 
         //Animation
         AnimationTimer animationTimer = new AnimationTimer() {
@@ -208,7 +209,7 @@ public class MainViewController {
 
     void drawStaticParts() {
 
-        int totalInitialBurstTime = calculateTotalInitialBurstTime();
+        int xLength = calculateXLength();
 
         //labels
         for (int i = 0; i < processList.size(); i++) {
@@ -219,12 +220,12 @@ public class MainViewController {
 
             gc.setStroke(Color.GRAY);
             gc.setLineDashes(5);
-            gc.strokeLine(startX + BURST_WIDTH, y, startX + (totalInitialBurstTime+20) * BURST_WIDTH, y);
+            gc.strokeLine(startX + BURST_WIDTH, y, startX + (xLength) * BURST_WIDTH, y);
             gc.setLineDashes(0);
         }
 
         int processPosition = calcProcessPosition(processList.size());
-        for (int i = 0; i <= totalInitialBurstTime+20; i++) {
+        for (int i = 0; i <= xLength; i++) {
             gc.setFill(Color.BLACK);
             int x = startX + (BURST_WIDTH * (i + 1));
 
@@ -236,12 +237,11 @@ public class MainViewController {
         }
     }
 
-    int calculateTotalInitialBurstTime() {
-        int totalInitialBurstTime = 0;
-        for (int i = 0; i < processList.size(); i++) {
-            totalInitialBurstTime += processList.get(i).getBurstTime();
-        }
-        return totalInitialBurstTime;
+    int calculateXLength() {
+
+        GUIGraphNeeds lastBurst=s.guiGraphNeeds.getLast();
+
+       return lastBurst.getCurrentTime()+lastBurst.getRunningDuration()+10;
     }
 
     public void drawDynamicParts(Process currentProcess, int currentTime, int runningDuration, boolean isBurstFinish) {
