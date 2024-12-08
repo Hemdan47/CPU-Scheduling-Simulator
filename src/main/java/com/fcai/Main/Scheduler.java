@@ -4,7 +4,7 @@ import java.util.List;
 
 public abstract class Scheduler {
     protected List<Process> processList;
-    protected List<GUIGraphNeeds> guiGraphNeeds =new ArrayList<>();
+    protected ArrayList<GUIGraphNeeds> guiGraphNeeds =new ArrayList<>();
     protected GUIStatistics guiStatistics;
     protected int contextSwitchingTime;
     protected int threshold;

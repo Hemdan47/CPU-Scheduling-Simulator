@@ -178,7 +178,8 @@ public void execute(ActionEvent event) {
         long lastUpdate = 0;
         int index = 0;
         int animationProgress = 1;
-        Process nextProcess = s.guiGraphNeeds.get(1).getProcess();
+
+        Process nextProcess = (s.guiGraphNeeds.size() > 1)? s.guiGraphNeeds.get(1).getProcess() : null;
 
         @Override
         public void handle(long now) {
@@ -190,7 +191,7 @@ public void execute(ActionEvent event) {
                     int currentTime = currentNeeds.getCurrentTime();
                     int runningDuration = currentNeeds.getRunningDuration();
 
-                    boolean isBurstFinish = ((animationProgress == runningDuration) && (!Objects.equals(process.getName(), nextProcess.getName()) || index == s.guiGraphNeeds.size() - 1));
+                    boolean isBurstFinish = (nextProcess != null && (animationProgress == runningDuration) && (!Objects.equals(process.getName(), nextProcess.getName()) || index == s.guiGraphNeeds.size() - 1));
 
                     drawDynamicParts(process, currentTime + animationProgress - 1, 1, isBurstFinish);
 

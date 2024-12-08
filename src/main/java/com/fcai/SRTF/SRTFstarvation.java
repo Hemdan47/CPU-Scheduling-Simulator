@@ -100,9 +100,10 @@ public class SRTFstarvation extends Scheduler {
                             lastProcess.getBurstTime(),
                             executionStartTime,
                             currentTime);
+                    System.out.printf("Switching from process %s to process %s at time %d to avoid starvation\n",
+                            lastProcess.getName(), currentProcess.getName(), currentTime);
                 }
-                System.out.printf("Switching from process %s to process %s at time %d to avoid starvation\n",
-                        lastProcess.getName(), currentProcess.getName(), currentTime);
+
                 currentTime += contextSwitchingTime;
                 executionStartTime = currentTime;
                 int q = currentProcess.getQuantum();
