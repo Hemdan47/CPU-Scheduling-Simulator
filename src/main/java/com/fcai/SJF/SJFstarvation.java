@@ -13,7 +13,7 @@ import java.util.List;
 public class SJFstarvation extends Scheduler {
     public SJFstarvation(List<Process> processList) {
         this.processList = new ArrayList<>(processList);
-        this.threshold=8;
+        this.threshold = 8;
     }
 
     @Override
@@ -56,7 +56,7 @@ public class SJFstarvation extends Scheduler {
                 }
             }
             thresholdExceeded.sort(Comparator.comparingInt(Process::getAge).thenComparingInt(Process::getPriority));
-            if(!thresholdExceeded.isEmpty()){
+            if (!thresholdExceeded.isEmpty()) {
                 processList.add(selectedProcess);
                 selectedProcess = thresholdExceeded.get(0);
                 thresholdExceeded.remove(selectedProcess);
@@ -72,8 +72,8 @@ public class SJFstarvation extends Scheduler {
             int executionStartTime = currentTime;
             currentTime += selectedProcess.getBurstTime();
 
-            for (Process process: availableProcesses){
-                process.setAge(process.getAge()+selectedProcess.getBurstTime());
+            for (Process process : availableProcesses) {
+                process.setAge(process.getAge() + selectedProcess.getBurstTime());
             }
             System.out.printf("%-10s%-15d%-25d%-15d%-15d\n",
                     selectedProcess.getName(),
@@ -98,13 +98,13 @@ public class SJFstarvation extends Scheduler {
         }
         processList = executedProcesses;
 
-        double avWaitingTime=calculateAverageWaitingTime();
-        double avTurnaroundTime=calculateAverageTurnAroundTime();
+        double avWaitingTime = calculateAverageWaitingTime();
+        double avTurnaroundTime = calculateAverageTurnAroundTime();
 
         System.out.printf("Average Waiting Time: %.2f%n", avWaitingTime);
         System.out.printf("Average Turnaround Time: %.2f%n", avTurnaroundTime);
 
-        guiStatistics=new GUIStatistics("SJF",avWaitingTime , avTurnaroundTime);
+        guiStatistics = new GUIStatistics("SJF", avWaitingTime, avTurnaroundTime);
 
     }
 

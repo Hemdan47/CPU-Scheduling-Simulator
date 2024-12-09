@@ -142,6 +142,7 @@ public void addProcess(ActionEvent event) {
 
 public void execute(ActionEvent event) {
 
+
     if (sjf.isSelected()) {
         s = new SJF(processList);
     } else if (ps.isSelected()) {

@@ -12,7 +12,7 @@ public class SRTFstarvation extends Scheduler {
     public SRTFstarvation(List<Process> list, int contextSwitch) {
         this.processList = new ArrayList<>(list);
         this.contextSwitchingTime = contextSwitch;
-        this.threshold = 8;
+        this.threshold = 10;
     }
 
 
