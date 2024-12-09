@@ -168,7 +168,7 @@ public void execute(ActionEvent event) {
 
     // Get the current stage
     Stage primaryStage = (Stage) ((Button) event.getSource()).getScene().getWindow();
-    Canvas canvas = new Canvas(2000, 1000);
+    Canvas canvas = new Canvas(7000, 1000);
     gc = canvas.getGraphicsContext2D();
 
 
@@ -324,7 +324,7 @@ public void drawDynamicParts(Process currentProcess, int currentTime, int runnin
         gc.setFill(Color.BLACK);
         totalRunningDuration += runningDuration;
         String durationText = totalRunningDuration + " unit time";
-        System.out.println(durationText);
+//        System.out.println(durationText);
         gc.fillText(durationText, startX + distantX - (totalRunningDuration * BURST_WIDTH) * 0.4, processPosition);
 
         totalRunningDuration = 0;
