@@ -9,10 +9,10 @@ import java.util.*;
 
 public class SRTFstarvation extends Scheduler {
 
-    public SRTFstarvation(List<Process> list, int contextSwitch, int threshold) {
+    public SRTFstarvation(List<Process> list, int contextSwitch) {
         this.processList = new ArrayList<>(list);
         this.contextSwitchingTime = contextSwitch;
-        this.threshold = threshold;
+        this.threshold = 8;
     }
 
 
@@ -54,6 +54,7 @@ public class SRTFstarvation extends Scheduler {
             for (Process process : readyQueue) {
                 if (!process.equals(lastProcess)) {
                     process.setAge(process.getAge() + 1);
+                    //System.out.println(process.getName() +" "+ process.getAge());
                 }
             }
             Process starvedProcess = null;
@@ -69,19 +70,17 @@ public class SRTFstarvation extends Scheduler {
             if (!thresholdExceeded.isEmpty()) {
                 starvedProcess = thresholdExceeded.get(0);
             }
-//            for (Process process : readyQueue) {
-//                if (process.getAge() >= threshold) {
-//                    starvedProcess = process;
-//                    break;
-//                }
-//            }
+            for (Process process : readyQueue) {
+                if (process.getAge() >= threshold) {
+                    starvedProcess = process;
+                    break;
+                }
+            }
             Process currentProcess;
-            //boolean isStarvationSwitch = false;
 
             if (starvedProcess != null) {
                 currentProcess = starvedProcess;
                 readyQueue.remove(starvedProcess);
-                //isStarvationSwitch = true;
             } else {
                 currentProcess = readyQueue.poll();
             }
@@ -111,12 +110,16 @@ public class SRTFstarvation extends Scheduler {
                     currentProcess.setBurstTime(currentProcess.getBurstTime() - 1);
                     q--;
                 }
+
                 int executionTime = currentProcess.getQuantum() - q;
                 for (int i = 0; i < executionTime; i++) {
                     // i+1
                     guiGraphNeeds.add(new GUIGraphNeeds(currentProcess, currentTime + i, 1));
                 }
                 currentTime += (executionTime);
+//                for (Process process: readyQueue){
+//                    process.setAge(process.getAge()+executionTime);
+//                }
                 currentProcess.setAge(0);
                 if (currentProcess.getBurstTime() == 0) {
                     System.out.printf("%-15s%-15d%-25d%-15d%-15d\n",

@@ -86,6 +86,8 @@ public class MainViewController {
 
     @FXML
     public void initialize() {
+//        threshold.setEditable(false);
+//        threshold.setText("10");
         // Set the default visibility when the scene loads
         updateVisibility(sjf); // Assume 'sjf' is selected initially
 
@@ -100,18 +102,18 @@ public class MainViewController {
 
     private void updateVisibility(RadioButton selectedRadioButton) {
         contextSwitching.setVisible(true);
-        threshold.setVisible(true);
+//        threshold.setVisible(true);
         contextSwitchingLabel.setVisible(true);
-        thresholdLabel.setVisible(true);
+//        thresholdLabel.setVisible(true);
 
         if (selectedRadioButton == sjf || selectedRadioButton == fcai) {
-            threshold.setVisible(false);
-            thresholdLabel.setVisible(false);
+//            threshold.setVisible(false);
+//            thresholdLabel.setVisible(false);
             contextSwitching.setVisible(false);
             contextSwitchingLabel.setVisible(false);
-        } else if (selectedRadioButton== ps || selectedRadioButton==srtf) {
-            threshold.setVisible(false);
-            thresholdLabel.setVisible(false);
+//        } else if (selectedRadioButton== ps || selectedRadioButton==srtf) {
+////            threshold.setVisible(false);
+////            thresholdLabel.setVisible(false);
         } else if (selectedRadioButton==sjfStarvation) {
             contextSwitching.setVisible(false);
             contextSwitchingLabel.setVisible(false);
@@ -152,11 +154,11 @@ public void execute(ActionEvent event) {
         s = new SRTF(processList, contextSwitchingValue);
     } else if (srtfStarvation.isSelected()) {
         int contextSwitchingValue = Integer.parseInt(contextSwitching.getText());
-        int thresholdValue = Integer.parseInt(threshold.getText());
-        s = new SRTFstarvation(processList, contextSwitchingValue, thresholdValue);
+        //int thresholdValue = Integer.parseInt(threshold.getText());
+        s = new SRTFstarvation(processList, contextSwitchingValue);
     } else if (sjfStarvation.isSelected()) {
-        int thresholdValue = Integer.parseInt(threshold.getText());
-        s = new SJFstarvation(processList, thresholdValue);
+        //int thresholdValue = Integer.parseInt(threshold.getText());
+        s = new SJFstarvation(processList);
     }
 
 

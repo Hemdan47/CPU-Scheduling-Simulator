@@ -11,9 +11,9 @@ import java.util.Comparator;
 import java.util.List;
 
 public class SJFstarvation extends Scheduler {
-    public SJFstarvation(List<Process> processList,int threshold) {
+    public SJFstarvation(List<Process> processList) {
         this.processList = new ArrayList<>(processList);
-        this.threshold=threshold;
+        this.threshold=8;
     }
 
     @Override
