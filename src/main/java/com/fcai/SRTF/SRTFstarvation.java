@@ -12,7 +12,7 @@ public class SRTFstarvation extends Scheduler {
     public SRTFstarvation(List<Process> list, int contextSwitch) {
         this.processList = new ArrayList<>(list);
         this.contextSwitchingTime = contextSwitch;
-        this.threshold = 10;
+        this.threshold = 8;
     }
 
 
@@ -105,16 +105,21 @@ public class SRTFstarvation extends Scheduler {
 
                 currentTime += contextSwitchingTime;
                 executionStartTime = currentTime;
+                int burst = currentProcess.getBurstTime();
                 int q = currentProcess.getQuantum();
+                q= Math.min(q,burst);
+                int executionTime =q;
                 while (q > 0) {
                     currentProcess.setBurstTime(currentProcess.getBurstTime() - 1);
                     q--;
                 }
 
-                int executionTime = currentProcess.getQuantum() - q;
                 for (int i = 0; i < executionTime; i++) {
                     // i+1
-                    guiGraphNeeds.add(new GUIGraphNeeds(currentProcess, currentTime + i, 1));
+                     guiGraphNeeds.add(new GUIGraphNeeds(currentProcess, currentTime + i, 1));
+                }
+                for (Process p:readyQueue){
+                    p.setAge(p.getAge()+executionTime);
                 }
                 currentTime += (executionTime);
 //                for (Process process: readyQueue){
@@ -132,6 +137,7 @@ public class SRTFstarvation extends Scheduler {
                     executedProcesses.add(currentProcess);
                     completedProcesses++;
                     executionStartTime = -1; // Reset for the next process
+                    System.out.println(currentProcess.getName() +" is completed");
                 } else {
                     // Re-add the process to the queue
                     readyQueue.add(currentProcess);
@@ -182,6 +188,8 @@ public class SRTFstarvation extends Scheduler {
                 executedProcesses.add(currentProcess);
                 completedProcesses++;
                 executionStartTime = -1; // reset for the next process
+                System.out.println(currentProcess.getName() +" is completed");
+
             } else {
                 // re-add the process to the ready queue
                 readyQueue.add(currentProcess);
