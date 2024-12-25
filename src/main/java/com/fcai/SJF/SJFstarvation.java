@@ -33,6 +33,9 @@ public class SJFstarvation extends Scheduler {
                 if (process.getArrivalTime() <= currentTime) {
                     availableProcesses.add(process);
                 }
+                if (process.getArrivalTime() < currentTime && process.getAge() == 0) {
+                    process.setAge(currentTime - process.getArrivalTime());
+                }
             }
 
             if (availableProcesses.isEmpty()) {
@@ -55,7 +58,7 @@ public class SJFstarvation extends Scheduler {
                     thresholdExceeded.add(process);
                 }
             }
-            thresholdExceeded.sort(Comparator.comparingInt(Process::getAge).thenComparingInt(Process::getPriority));
+            thresholdExceeded.sort(Comparator.comparingInt(Process::getAge).reversed().thenComparingInt(Process::getPriority));
             if (!thresholdExceeded.isEmpty()) {
                 processList.add(selectedProcess);
                 selectedProcess = thresholdExceeded.get(0);

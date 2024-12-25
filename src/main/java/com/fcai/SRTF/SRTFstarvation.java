@@ -66,7 +66,7 @@ public class SRTFstarvation extends Scheduler {
                 }
 
             }
-            thresholdExceeded.sort(Comparator.comparingInt(Process::getAge).thenComparingInt(Process::getPriority));
+            thresholdExceeded.sort(Comparator.comparingInt(Process::getAge).reversed().thenComparingInt(Process::getPriority));
             if (!thresholdExceeded.isEmpty()) {
                 starvedProcess = thresholdExceeded.get(0);
             }
