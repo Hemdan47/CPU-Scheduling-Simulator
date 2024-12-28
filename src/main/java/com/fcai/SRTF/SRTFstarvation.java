@@ -70,12 +70,12 @@ public class SRTFstarvation extends Scheduler {
             if (!thresholdExceeded.isEmpty()) {
                 starvedProcess = thresholdExceeded.get(0);
             }
-            for (Process process : readyQueue) {
-                if (process.getAge() >= threshold) {
-                    starvedProcess = process;
-                    break;
-                }
-            }
+//            for (Process process : readyQueue) {
+//                if (process.getAge() >= threshold) {
+//                    starvedProcess = process;
+//                    break;
+//                }
+//            }
             Process currentProcess;
 
             if (starvedProcess != null) {
