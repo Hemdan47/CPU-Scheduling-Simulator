@@ -36,7 +36,8 @@ public class MainViewController {
     private int totalRunningDuration = 0;
 
     private GraphicsContext gc;
-    Scheduler s;
+    Scheduler scheduler;
+    ArrayList<Duration> durations;
 
     @FXML
     private ListView<Process> listView;
@@ -47,11 +48,11 @@ public class MainViewController {
     @FXML
     private TextField processName;
     //    @FXML
-//    private TextField processColorR;
-//    @FXML
-//    private TextField processColorG;
-//    @FXML
-//    private TextField processColorB;
+    //    private TextField processColorR;
+    //    @FXML
+    //    private TextField processColorG;
+    //    @FXML
+    //    private TextField processColorB;
     @FXML
     private ColorPicker processColorPicker;
 
@@ -144,25 +145,24 @@ public void execute(ActionEvent event) {
 
 
     if (sjf.isSelected()) {
-        s = new SJF(processList);
+        scheduler = new SJF(processList);
     } else if (ps.isSelected()) {
         int contextSwitchingValue = Integer.parseInt(contextSwitching.getText());
-        s = new PriorityScheduling(processList, contextSwitchingValue);
+        scheduler = new PriorityScheduling(processList, contextSwitchingValue);
     } else if (fcai.isSelected()) {
-        s = new FCAI(processList);
+        scheduler = new FCAI(processList);
     } else if (srtf.isSelected()) {
         int contextSwitchingValue = Integer.parseInt(contextSwitching.getText());
-        s = new SRTF(processList, contextSwitchingValue);
+        scheduler = new SRTF(processList, contextSwitchingValue);
     } else if (srtfStarvation.isSelected()) {
         int contextSwitchingValue = Integer.parseInt(contextSwitching.getText());
         //int thresholdValue = Integer.parseInt(threshold.getText());
-        s = new SRTFstarvation(processList, contextSwitchingValue);
+        scheduler = new SRTFstarvation(processList, contextSwitchingValue);
     } else if (sjfStarvation.isSelected()) {
         //int thresholdValue = Integer.parseInt(threshold.getText());
-        s = new SJFstarvation(processList);
+        scheduler = new SJFstarvation(processList);
     }
-
-
+    
     /// /////////////////////////////////////////////////////
     /// ////////////////////////////////////////////////////
 
@@ -170,10 +170,10 @@ public void execute(ActionEvent event) {
     Stage primaryStage = (Stage) ((Button) event.getSource()).getScene().getWindow();
     Canvas canvas = new Canvas(7000, 1000);
     gc = canvas.getGraphicsContext2D();
-
-
-        s.execute();
-        drawStaticParts();
+    
+    //get the list of durations
+    durations = scheduler.execute();
+    drawStaticParts();
 
     //Animation
     AnimationTimer animationTimer = new AnimationTimer() {
@@ -182,26 +182,26 @@ public void execute(ActionEvent event) {
         int index = 0;
         int animationProgress = 1;
 
-        Process nextProcess = (s.guiGraphNeeds.size() > 1)? s.guiGraphNeeds.get(1).getProcess() : null;
+        Process nextProcess = (durations.size() > 1)? durations.get(1).getProcess() : null;
 
         @Override
         public void handle(long now) {
             if (now - lastUpdate >= 0.15e9) {
-                if (index < s.guiGraphNeeds.size()) {
-                    GUIGraphNeeds currentNeeds = s.guiGraphNeeds.get(index);
+                if (index < durations.size()) {
+                    Duration currentNeeds = durations.get(index);
 
                     Process process = currentNeeds.getProcess();
                     int currentTime = currentNeeds.getCurrentTime();
                     int runningDuration = currentNeeds.getRunningDuration();
 
-                    boolean isBurstFinish = (nextProcess != null && (animationProgress == runningDuration) && (!Objects.equals(process.getName(), nextProcess.getName()) || index == s.guiGraphNeeds.size() - 1));
+                    boolean isBurstFinish = (nextProcess != null && (animationProgress == runningDuration) && (!Objects.equals(process.getName(), nextProcess.getName()) || index == durations.size() - 1));
 
                     drawDynamicParts(process, currentTime + animationProgress - 1, 1, isBurstFinish);
 
                     if (animationProgress == runningDuration) {
                         index++;
-                        if (index < s.guiGraphNeeds.size() - 1)
-                            nextProcess = s.guiGraphNeeds.get(index + 1).getProcess();
+                        if (index < durations.size() - 1)
+                            nextProcess = durations.get(index + 1).getProcess();
 
                         animationProgress = 0;
                     }
@@ -270,7 +270,7 @@ public void execute(ActionEvent event) {
 
 void drawStaticParts() {
 
-        int xLength = calculateXLength();
+    int xLength = calculateXLength();
 
     //labels
     for (int i = 0; i < processList.size(); i++) {
@@ -300,9 +300,9 @@ void drawStaticParts() {
 
     int calculateXLength() {
 
-        GUIGraphNeeds lastBurst=s.guiGraphNeeds.getLast();
+        Duration lastBurst= durations.getLast();
 
-       return lastBurst.getCurrentTime()+lastBurst.getRunningDuration()+10;
+        return lastBurst.getCurrentTime()+lastBurst.getRunningDuration()+10;
     }
 
 public void drawDynamicParts(Process currentProcess, int currentTime, int runningDuration, boolean isBurstFinish) {
@@ -341,7 +341,7 @@ private GridPane setStatisticsTable() {
     GridPane statisticsTable = new GridPane();
     statisticsTable.setPadding(new Insets(10, 20, 10, 20)); // top, right, bottom, left
 
-    GUIStatistics guiStatistics = s.guiStatistics;
+    GUIStatistics guiStatistics = scheduler.guiStatistics;
 
     Text scheduleTitle = new Text("Schedule Name: ");
     statisticsTable.add(scheduleTitle, 0, 0);
@@ -371,7 +371,7 @@ private GridPane setProcessesInfoTable() {
             "Order", "Name", "Color", "Priority", "Quantum", "Burst Time", "Arrival Time", "Waiting Time", "Turnaround Time", "Complete Time"
     };
 
-    List<Process> processList = s.processList;
+    List<Process> processList = scheduler.processList;
 
     for (int i = 0; i < columnTitles.length; i++) {
         Text columnTitle = new Text(columnTitles[i]);

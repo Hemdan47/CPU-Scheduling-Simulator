@@ -1,6 +1,6 @@
 package com.fcai.PriorityScheduling;
 
-import com.fcai.Main.GUIGraphNeeds;
+import com.fcai.Main.Duration;
 import com.fcai.Main.GUIStatistics;
 import com.fcai.Main.Scheduler;
 import com.fcai.Main.Process;
@@ -16,7 +16,8 @@ public class PriorityScheduling extends Scheduler {
     }
 
     @Override
-    public void execute() {
+    public ArrayList<Duration> execute() {
+        ArrayList<Duration> durations = new ArrayList<>();
         processList.sort(Comparator.comparingInt(Process::getArrivalTime));
         int currentTime = 0, counter = 0;
         for (Process process : processList) {
@@ -43,7 +44,7 @@ public class PriorityScheduling extends Scheduler {
                 readyProcessList.sort(Comparator.comparingInt(Process::getPriority).thenComparingInt(Process::getArrivalTime));
                 Process currentProcess = readyProcessList.getFirst();
                 
-                guiGraphNeeds.add(new GUIGraphNeeds(currentProcess, currentTime, currentProcess.getBurstTime()));
+                durations.add(new Duration(currentProcess, currentTime, currentProcess.getBurstTime()));
     
                 int completionTime = currentTime + currentProcess.getBurstTime();
                 currentProcess.setCompletionTime(completionTime);
@@ -90,7 +91,7 @@ public class PriorityScheduling extends Scheduler {
 
         System.out.printf("Average Waiting Time: %.2f%n", avWaitingTime);
         System.out.printf("Average Turnaround Time: %.2f%n", avTurnaroundTime);
-
         guiStatistics=new GUIStatistics("Priority Scheduling",avWaitingTime , avTurnaroundTime);
+        return durations;
     }
 }

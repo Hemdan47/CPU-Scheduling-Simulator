@@ -173,7 +173,8 @@ public class FCAI extends Scheduler {
 //    //v2
 
     @Override
-    public void execute() {
+    public ArrayList<Duration> execute() {
+        ArrayList<Duration> durations = new ArrayList<>();
         List<Process> readyQueue = new ArrayList<>();
 
         int currentTime = 0;
@@ -207,7 +208,7 @@ public class FCAI extends Scheduler {
             currentProcess.setBurstTime(currentProcess.getBurstTime() - executionTime);
             for (int i = 0; i < executionTime; i++) {
                 // i+1
-                guiGraphNeeds.add(new GUIGraphNeeds(currentProcess, currentTime + i, 1));
+                durations.add(new Duration(currentProcess, currentTime + i, 1));
             }
             currentTime += executionTime;
 
@@ -250,7 +251,7 @@ public class FCAI extends Scheduler {
                 // Continue executing current process
                 currentProcess.setBurstTime(currentProcess.getBurstTime() - 1);
                 // currentTime+1
-                guiGraphNeeds.add(new GUIGraphNeeds(currentProcess, currentTime, 1));
+                durations.add(new Duration(currentProcess, currentTime, 1));
                 currentTime++;
 
                 if (currentProcess.getBurstTime() == 0) {
@@ -286,7 +287,7 @@ public class FCAI extends Scheduler {
         System.out.printf("Average Turnaround Time: %.2f%n", avTurnaroundTime);
 
         guiStatistics=new GUIStatistics("FCAI",avWaitingTime , avTurnaroundTime);
-
+        return durations;
     }
 
 

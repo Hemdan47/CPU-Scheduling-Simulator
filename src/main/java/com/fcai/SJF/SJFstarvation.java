@@ -1,6 +1,6 @@
 package com.fcai.SJF;
 
-import com.fcai.Main.GUIGraphNeeds;
+import com.fcai.Main.Duration;
 import com.fcai.Main.GUIStatistics;
 import com.fcai.Main.Process;
 import com.fcai.Main.Scheduler;
@@ -17,7 +17,8 @@ public class SJFstarvation extends Scheduler {
     }
 
     @Override
-    public void execute() {
+    public ArrayList<Duration> execute() {
+        ArrayList<Duration> durations = new ArrayList<>();
         // Sort processes based on arrival time
         Collections.sort(processList, Comparator.comparingInt(Process::getArrivalTime));
 
@@ -70,7 +71,7 @@ public class SJFstarvation extends Scheduler {
             // executing and the burst time of that process
             selectedProcess.setCompletionTime(currentTime + selectedProcess.getBurstTime());
             selectedProcess.setWaitingTime(currentTime - selectedProcess.getArrivalTime());
-            guiGraphNeeds.add(new GUIGraphNeeds(selectedProcess, currentTime, selectedProcess.getBurstTime()));
+            durations.add(new Duration(selectedProcess, currentTime, selectedProcess.getBurstTime()));
 
             int executionStartTime = currentTime;
             currentTime += selectedProcess.getBurstTime();
@@ -108,7 +109,7 @@ public class SJFstarvation extends Scheduler {
         System.out.printf("Average Turnaround Time: %.2f%n", avTurnaroundTime);
 
         guiStatistics = new GUIStatistics("SJF", avWaitingTime, avTurnaroundTime);
-
+        return durations;
     }
 
 }

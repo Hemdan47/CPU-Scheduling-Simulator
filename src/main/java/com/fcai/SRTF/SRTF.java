@@ -1,6 +1,6 @@
 package com.fcai.SRTF;
 
-import com.fcai.Main.GUIGraphNeeds;
+import com.fcai.Main.Duration;
 import com.fcai.Main.GUIStatistics;
 import com.fcai.Main.Process;
 import com.fcai.Main.Scheduler;
@@ -16,8 +16,8 @@ public class SRTF extends Scheduler {
     }
 
     @Override
-    public void execute() {
-
+    public ArrayList<Duration> execute() {
+        ArrayList<Duration> durations = new ArrayList<>();
         //sort all the processes on their arrival time
         Collections.sort(processList, Comparator.comparingInt(Process::getArrivalTime));
 
@@ -77,7 +77,7 @@ public class SRTF extends Scheduler {
             } else if (lastProcess == null) {
                 executionStartTime = currentTime; // first process to start execution
             }
-            guiGraphNeeds.add(new GUIGraphNeeds(currentProcess , currentTime ,runningDuration));
+            durations.add(new Duration(currentProcess , currentTime ,runningDuration));
 
             // execute the process for 1 unit of time
             currentProcess.setBurstTime(currentProcess.getBurstTime() - 1);
@@ -127,5 +127,6 @@ public class SRTF extends Scheduler {
         System.out.printf("Average Turnaround Time: %.2f%n", avTurnaroundTime);
 
         guiStatistics=new GUIStatistics("SRTF",avWaitingTime , avTurnaroundTime);
+        return durations;
     }
 }
