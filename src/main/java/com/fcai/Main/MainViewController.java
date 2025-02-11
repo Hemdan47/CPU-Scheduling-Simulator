@@ -140,6 +140,9 @@ public void addProcess(ActionEvent event) {
     listView.getItems().add(process);
 }
 
+private int calculateCanvasHeight() {
+    return startY + (processList.size() * PROCESS_HEIGHT * 2) + 50;
+}
 
 public void execute(ActionEvent event) {
 
@@ -168,13 +171,37 @@ public void execute(ActionEvent event) {
 
     // Get the current stage
     Stage primaryStage = (Stage) ((Button) event.getSource()).getScene().getWindow();
-    Canvas canvas = new Canvas(7000, 1000);
-    gc = canvas.getGraphicsContext2D();
-    
-    //get the list of durations
+
     durations = scheduler.execute();
+    int xLength = calculateXLength();
+
+    // Calculate scaling
+    final int MAX_CANVAS_WIDTH = 4096;
+    int requiredWidth = xLength * BURST_WIDTH;
+    double scaleFactor = 1.0;
+
+    if(requiredWidth > MAX_CANVAS_WIDTH) {
+        scaleFactor = (double) MAX_CANVAS_WIDTH / requiredWidth;
+    }
+
+    // Create canvas with max 4096 width
+    Canvas canvas = new Canvas(Math.min(requiredWidth, MAX_CANVAS_WIDTH), calculateCanvasHeight());
+
+    gc = canvas.getGraphicsContext2D();
+    gc.scale(scaleFactor, 1.0); // Horizontal scaling only
     drawStaticParts();
 
+
+
+
+//    Canvas canvas = new Canvas(7000, 1000);
+//    gc = canvas.getGraphicsContext2D();
+//
+//    //get the list of durations
+//    durations = scheduler.execute();
+//    drawStaticParts();
+
+    /// /////////////////////////////////////////////
     //Animation
     AnimationTimer animationTimer = new AnimationTimer() {
 
