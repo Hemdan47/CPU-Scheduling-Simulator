@@ -67,9 +67,9 @@ The CPU Scheduling Simulator is a Java-based application designed to simulate va
 
 ## Usage Example
 
-![Main View](https://i.ibb.co/d4jBsxBR/Screenshot-450.png)
+![Main View](https://i.postimg.cc/9MDZnBYg/Screenshot-450.png)
 
-![Graph](https://i.ibb.co/SX96j220/Screenshot-451.png)
+![Graph](https://i.postimg.cc/HW7b0BxV/Screenshot-451.png)
 
 
 ## Contributing
